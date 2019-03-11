@@ -7,6 +7,7 @@ import Sidebar from "./Sidebar";
 import Loading from "./Loading";
 import AuthorsList from "./AuthorsList";
 import AuthorDetail from "./AuthorDetail";
+import BookList from "./BookList";
 
 const instance = axios.create({
   baseURL: "https://the-index-api.herokuapp.com"
@@ -15,11 +16,18 @@ const instance = axios.create({
 class App extends Component {
   state = {
     authors: [],
-    loading: true
+    loadingAuthors: true,
+    loadingBooks: true,
+    books: []
   };
 
   fetchAllAuthors = async () => {
     const res = await instance.get("/api/authors/");
+    return res.data;
+  };
+
+  fetchAllBooks = async () => {
+    const res = await instance.get("/api/books/");
     return res.data;
   };
 
@@ -28,7 +36,16 @@ class App extends Component {
       const authors = await this.fetchAllAuthors();
       this.setState({
         authors: authors,
-        loading: false
+        loadingAuthors: false
+      });
+    } catch (err) {
+      console.error(err);
+    }
+    try {
+      const books = await this.fetchAllBooks();
+      this.setState({
+        books: books,
+        loadingBooks: false
       });
     } catch (err) {
       console.error(err);
@@ -36,7 +53,7 @@ class App extends Component {
   }
 
   getView = () => {
-    if (this.state.loading) {
+    if (this.state.loadingAuthors || this.state.loadingBooks) {
       return <Loading />;
     } else {
       return (
@@ -48,6 +65,10 @@ class App extends Component {
             render={props => (
               <AuthorsList {...props} authors={this.state.authors} />
             )}
+          />
+          <Route
+            path="/books/:color?"
+            render={props => <BookList {...props} books={this.state.books} />}
           />
         </Switch>
       );

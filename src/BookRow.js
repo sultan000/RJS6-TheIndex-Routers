@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-
+import { Link } from "react-router-dom";
+import AuthorDetail from "./AuthorDetail";
 class BookRow extends Component {
   render() {
     const book = this.props.book;
@@ -8,11 +9,15 @@ class BookRow extends Component {
         <td>{book.title}</td>
         <td>
           {book.authors.map(author => (
-            <div key={author.id}>{author.name}</div>
+            <Link to={`/authors/${author.id}`}>
+              <div key={author.id}>{author.name}</div>
+            </Link>
           ))}
         </td>
         <td>
-          <button className="btn" style={{ backgroundColor: book.color }} />
+          <Link to={`/books/${book.color}`}>
+            <button className="btn" style={{ backgroundColor: book.color }} />
+          </Link>
         </td>
       </tr>
     );
